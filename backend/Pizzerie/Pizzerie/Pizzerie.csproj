@@ -11,7 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <ProjectReference Include="..\Pizzerie.Business\Pizzerie.Business.csproj" />
+    <ProjectReference Include="..\Pizzerie.Domain\Pizzerie.Domain.csproj" />
   </ItemGroup>
 
 </Project>
