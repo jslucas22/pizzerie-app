@@ -9,6 +9,9 @@ import Login from "../screens/Login";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "styled-components/native";
 import { RootStackParamList } from "./stack";
+import Settings from "../screens/Settings";
+import Checkouts from "../screens/Checkouts";
+import Menu from "../screens/Menu";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -43,6 +46,21 @@ export const StackRoutes: React.FC = () => {
         name="Home"
         component={Home}
         options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Settings"
+        component={Settings}
+        options={{ headerTitle: "Configurações" }}
+      />
+      <Stack.Screen
+        name="Checkouts"
+        component={Checkouts}
+        options={{ headerTitle: "Comandas" }}
+      />
+      <Stack.Screen
+        name="Menu"
+        component={Menu}
+        options={{ headerTitle: "Cardápio" }}
       />
     </Stack.Navigator>
   );

@@ -13,12 +13,12 @@ export const Header = styled.View`
   justify-content: center;
 `;
 
-export const HeaderText = styled.Text<{ secondary?: boolean }>`
+export const HeaderText = styled.Text`
   font-family: ${(p) => p.theme.fonts.bold};
   font-size: ${RFValue(30)}px;
   line-height: ${RFValue(40)}px;
-  color: ${(p) =>
-    p.secondary ? p.theme.colors.secondary : p.theme.colors.primary};
+  color: ${(p) => p.theme.colors.card};
+  margin-top: 16px;
 `;
 
 export const Content = styled.ScrollView`

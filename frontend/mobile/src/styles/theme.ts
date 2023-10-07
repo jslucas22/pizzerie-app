@@ -43,18 +43,18 @@ export const theme: AppTheme = {
     bold: "Poppins_700Bold",
   },
   colors: {
-    primary: "#FF6347",
+    primary: "#DD0300",
     secondary: "#228B22",
     disabled: "#C0C0C0",
     card: "#FFD700",
     header: {
-      backgroundColor: "#8B4513",
+      backgroundColor: "#AA0D00",
     },
     button: {
       primary: " #FFA500",
     },
     text: {
-      primary: "#8B4513",
+      primary: "#002510",
       secondary: "#FFFFFF",
     },
     input: {
@@ -63,7 +63,7 @@ export const theme: AppTheme = {
       placeholder: "#6C6C6C",
       disabled: "#E0E0E4",
     },
-    background: "#F5F5F5",
+    background: "#CACACA",
     separator: "silver",
   },
 };

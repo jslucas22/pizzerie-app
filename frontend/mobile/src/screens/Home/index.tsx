@@ -8,6 +8,7 @@ import { useTheme } from "styled-components/native";
 import { ScreenBaseProps } from "../../utils";
 import * as S from "./styles";
 import { Alert } from "react-native";
+import OptionsCard from "../../components/OptionsCard";
 
 type Props = ScreenBaseProps<"Home">;
 
@@ -28,7 +29,26 @@ const Home: React.FC<Props> = ({ navigation }) => {
           handleLogout();
         }}
       />
-      <S.Container></S.Container>
+      <S.Container>
+        <OptionsCard
+          name="Ver Cardápio"
+          icon={{ name: "menu-book", type: "material", size: 24 }}
+        />
+        <OptionsCard
+          name="Ver Comandas"
+          icon={{ name: "cards", type: "material-community", size: 24 }}
+        />
+        <OptionsCard
+          name="Novo Pedido"
+          icon={{ name: "plus", type: "fontAwesome", size: 24 }}
+          onPress={() => navigation.navigate("Settings")}
+        />
+        <OptionsCard
+          name="Configurações"
+          icon={{ name: "gears", type: "fontAwesome", size: 24 }}
+          onPress={() => navigation.navigate("Settings")}
+        />
+      </S.Container>
     </>
   );
 };

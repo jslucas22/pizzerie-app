@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/alt-text */
 import React, { useRef, useState } from "react";
-import { Image, TextInput } from "react-native";
+import { Image, TextInput, View } from "react-native";
 
 import Toast from "react-native-root-toast";
 
@@ -13,6 +13,7 @@ import { focusNextInput, ScreenBaseProps } from "../../utils";
 import { useTheme } from "styled-components/native";
 import Version from "../../components/Version";
 import * as S from "./styles";
+import Icon from "../../components/Icon";
 
 type Props = ScreenBaseProps<"Login">;
 
@@ -33,7 +34,16 @@ const Login: React.FC<Props> = ({ navigation }) => {
   return (
     <S.Container>
       <S.Header>
-        <S.HeaderText secondary>Pizzeria APP</S.HeaderText>
+        <View style={{ position: "absolute" }}>
+          <Icon
+            name="pizza-slice"
+            type="fontAwesome5"
+            size={120}
+            right={false}
+            color={theme.colors.card}
+          />
+          <S.HeaderText>Pizzeria APP</S.HeaderText>
+        </View>
       </S.Header>
       <S.Content>
         <S.GreetingText>Acessar sistema</S.GreetingText>

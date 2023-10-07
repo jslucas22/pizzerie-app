@@ -73,7 +73,7 @@ export function formatNumber(num: number, casas = 2) {
 }
 
 export function getBackendUrl() {
-  return "https://localhost:3030";
+  return "https://localhost:5194/api";
 }
 
 /**
