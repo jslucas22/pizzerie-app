@@ -33,15 +33,17 @@ const Home: React.FC<Props> = ({ navigation }) => {
         <OptionsCard
           name="Ver Cardápio"
           icon={{ name: "menu-book", type: "material", size: 24 }}
+          onPress={() => navigation.navigate("Menu")}
         />
         <OptionsCard
           name="Ver Comandas"
           icon={{ name: "cards", type: "material-community", size: 24 }}
+          onPress={() => navigation.navigate("Desks")}
         />
         <OptionsCard
           name="Novo Pedido"
           icon={{ name: "plus", type: "fontAwesome", size: 24 }}
-          onPress={() => navigation.navigate("Settings")}
+          onPress={() => navigation.navigate("Desks", { newDesk: true })}
         />
         <OptionsCard
           name="Configurações"

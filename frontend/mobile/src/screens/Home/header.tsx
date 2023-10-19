@@ -8,7 +8,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import Icon from "../../components/Icon";
 import Spacer from "../../components/Spacer";
-import ModalConfirm from "../../components/Modal/ModalConfirm";
 import HeaderContainer from "../../components/headers/headerContainer";
 
 import { useTheme } from "styled-components/native";

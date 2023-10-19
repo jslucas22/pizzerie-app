@@ -15,6 +15,10 @@ export type AppTheme = {
     button: {
       primary: string;
     };
+    status: {
+      active: string;
+      error: string;
+    };
     disabled: string;
     header: {
       backgroundColor: string;
@@ -52,6 +56,10 @@ export const theme: AppTheme = {
     },
     button: {
       primary: " #FFA500",
+    },
+    status: {
+      active: "#22FF55",
+      error: "#FF3322",
     },
     text: {
       primary: "#002510",
