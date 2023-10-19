@@ -1,7 +1,7 @@
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 export type RootStackParamList = {
-  Checkouts: undefined;
+  Desks: undefined | { newDesk?: boolean };
   Home: undefined;
   Login: undefined;
   Menu: undefined;
