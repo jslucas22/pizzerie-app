@@ -1,13 +1,19 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE
+    employees_levels (
+        id SERIAL PRIMARY KEY,
+        description VARCHAR(20)
+    );
+
+CREATE TABLE
     employees (
         id SERIAL PRIMARY KEY,
         uuid UUID DEFAULT uuid_generate_v4(),
         name VARCHAR(255) NOT NULL,
-        login VARCHAR(255) NOT NULL UNIQUE,
+        username VARCHAR(255) NOT NULL UNIQUE,
         password VARCHAR(255) NOT NULL,
-        user_type VARCHAR(50) NOT NULL,
+        level_id INT REFERENCES employees(id),
         created_at TIMESTAMP
         WITH
             TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -70,10 +76,15 @@ CREATE TABLE
         number_of_tables INTEGER NOT NULL
     );
 
-INSERT INTO employees (name, login, password, user_type) VALUES 
-('John Doe', 'johndoe', 'password123', 'waiter'),
-('Jane Smith', 'janesmith', 'password123', 'chef'),
-('Mike Johnson', 'mikejohnson', 'password123', 'manager');
+INSERT INTO employees_levels (description) VALUES
+('Chef'),
+('Manager'),
+('Waiter');
+
+INSERT INTO employees (name, username, password, level_id) VALUES 
+('John Doe', 'johndoe', '$2a$11$YjgZJVNn6gJHVC34KsfwguY5D01LlqdNcOpg7AyaGeZC.De07YCom', 3),
+('Jane Smith', 'janesmith', '$2a$11$YjgZJVNn6gJHVC34KsfwguY5D01LlqdNcOpg7AyaGeZC.De07YCom', 2),
+('Mike Johnson', 'mikejohnson', '$2a$11$YjgZJVNn6gJHVC34KsfwguY5D01LlqdNcOpg7AyaGeZC.De07YCom', 1);
 
 INSERT INTO products (description, price, category) VALUES 
 ('Margherita Pizza', 12.99, 'Pizza'),

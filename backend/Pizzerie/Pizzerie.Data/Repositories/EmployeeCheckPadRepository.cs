@@ -299,21 +299,21 @@ namespace Pizzerie.Data.Repositories
             using var connection = _connectionFactory.GetConnection();
 
             const string query = @"
-        SELECT
-            o.uuid as Id,
-            e.name as EmployeeName,
-            o.customer_name as ClientName,
-            o.created_at as Creation,
-            o.updated_at as LastChangeDate,
-            p.uuid as ProductId,
-            p.description as Description,
-            p.category as Category,
-            p.price as Price,
-            oi.quantity as Quantity
-        FROM orders o
-        JOIN employees e ON o.employee_id = e.id
-        LEFT JOIN order_items oi ON o.id = oi.order_id
-        LEFT JOIN products p ON oi.product_id = p.id;";
+            SELECT
+                o.uuid as Id,
+                e.name as EmployeeName,
+                o.customer_name as ClientName,
+                o.created_at as Creation,
+                o.updated_at as LastChangeDate,
+                p.uuid as ProductId,
+                p.description as Description,
+                p.category as Category,
+                p.price as Price,
+                oi.quantity as Quantity
+            FROM orders o
+            JOIN employees e ON o.employee_id = e.id
+            LEFT JOIN order_items oi ON o.id = oi.order_id
+            LEFT JOIN products p ON oi.product_id = p.id;";
 
             var orderDictionary = new Dictionary<string, EmployeeCheckPadGetResponse>();
 
