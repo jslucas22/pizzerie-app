@@ -9,5 +9,12 @@ public interface IUserRepository
     /// </summary>
     /// <param name="username">username of the employee</param>
     /// <returns></returns>
-    Task<UserResponse?> GetAsync(string username);
+    Task<UserLoginResponse?> GetAsync(string username);
+
+    /// <summary>
+    /// Create user account async
+    /// </summary>
+    /// <param name="model">employee model content</param>
+    /// <returns></returns>
+    Task<string?> CreateAsync(UserRegisterRequest model);
 }

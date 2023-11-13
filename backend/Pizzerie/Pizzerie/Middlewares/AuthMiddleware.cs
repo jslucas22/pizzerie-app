@@ -8,7 +8,7 @@ namespace Pizzerie.Middlewares;
 
 public class AuthMiddleware
 {
-    public static string GetToken(UserResponse model)
+    public static string GetToken(UserLoginResponse model)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(UserAuthenticationSettings.JwtSecret);

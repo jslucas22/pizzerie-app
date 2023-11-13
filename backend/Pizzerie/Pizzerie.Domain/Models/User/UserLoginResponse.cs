@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Pizzerie.Domain.Models.User;
 
-public class UserResponse
+public class UserLoginResponse
 {
     [JsonPropertyName("id")] public Guid Id { get; set; }
 

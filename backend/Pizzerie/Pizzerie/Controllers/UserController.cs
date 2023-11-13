@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Pizzerie.Business.Services.Abstractions;
@@ -28,7 +29,7 @@ public class UserController : ControllerBase
     [HttpPost]
     [Route("login")]
     [AllowAnonymous]
-    public async Task<ActionResult<dynamic>> Login(UserRequest model)
+    public async Task<ActionResult<dynamic>> Login(UserLoginRequest model)
     {
         try
         {
@@ -51,6 +52,30 @@ public class UserController : ControllerBase
         }
         catch (Exception ex)
         {
+            return Problem("Something went wrong attempting to log in");
+        }
+    }
+
+    [HttpPost]
+    [Route("register")]
+    [AllowAnonymous]
+    public async Task<ActionResult<dynamic>> Register(UserRegisterRequest model)
+    {
+        try
+        {
+            var result = await _service.CreateAsync(model);
+
+            if (result == null ||
+                result.Contains("vc-") || 
+                result.Contains("ve-") || 
+                result.Contains("ie-"))
+                return BadRequest(new { Success = false, Message = result });
+
+            return Ok(new { Success = true, Id = result });
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
             return Problem("Something went wrong attempting to log in");
         }
     }

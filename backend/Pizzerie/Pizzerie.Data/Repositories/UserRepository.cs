@@ -1,3 +1,4 @@
+using System.Transactions;
 using Dapper;
 using Pizzerie.Data.DbConfig;
 using Pizzerie.Data.Repositories.Abstractions;
@@ -18,7 +19,7 @@ public class UserRepository : IUserRepository
         _connectionFactory = connectionFactory;
     }
 
-    public async Task<UserResponse?> GetAsync(string username)
+    public async Task<UserLoginResponse?> GetAsync(string username)
     {
         using var connection = _connectionFactory.GetConnection();
 
@@ -44,7 +45,7 @@ public class UserRepository : IUserRepository
             return null;
         }
 
-        var user = new UserResponse
+        var user = new UserLoginResponse
         {
             Id = result.uuid,
             Name = result.name,
@@ -56,5 +57,26 @@ public class UserRepository : IUserRepository
         };
 
         return user;
+    }
+
+    public async Task<string?> CreateAsync(UserRegisterRequest model)
+    {
+        using var connection = _connectionFactory.GetConnection();
+        connection.Open();
+
+        const string query = @"
+        INSERT INTO employees (name, username, password, level_id)
+        VALUES (@Name, @Username, @Password, @Level)
+        RETURNING uuid;";
+
+        var result = await connection.QueryFirstOrDefaultAsync<Guid>(query,
+            new { model.Name, model.Username, model.Password, model.Level });
+        
+        if (result == Guid.Empty)
+        {
+            throw new InvalidOperationException("Something went wrong attempting to insert this employee, try again later");
+        }
+        
+        return result.ToString();
     }
 }

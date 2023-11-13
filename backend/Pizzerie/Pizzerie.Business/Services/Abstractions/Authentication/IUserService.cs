@@ -9,5 +9,12 @@ public interface IUserService
     /// </summary>
     /// <param name="model">employee model content to authenticate</param>
     /// <returns></returns>
-    Task<UserResponse?> GetAsync(UserRequest model);
+    Task<UserLoginResponse?> GetAsync(UserLoginRequest model);
+    
+    /// <summary>
+    /// Create user account async
+    /// </summary>
+    /// <param name="model">employee model content</param>
+    /// <returns></returns>
+    Task<string?> CreateAsync(UserRegisterRequest model);
 }

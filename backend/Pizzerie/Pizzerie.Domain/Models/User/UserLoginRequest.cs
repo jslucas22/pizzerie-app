@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Pizzerie.Domain.Models.User;
 
-public class UserRequest
+public class UserLoginRequest
 {
     [JsonPropertyName("username")] public string Username { get; set; } = string.Empty;
 
