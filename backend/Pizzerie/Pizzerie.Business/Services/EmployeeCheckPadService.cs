@@ -1,6 +1,9 @@
-﻿using Pizzerie.Business.Services.Abstractions;
+﻿using System.Diagnostics;
+using Pizzerie.Business.Services.Abstractions;
+using Pizzerie.Business.Strategies.Abstractions;
 using Pizzerie.Data.Repositories.Abstractions;
 using Pizzerie.Domain.Models.Application;
+using Pizzerie.Domain.Models.EmployeeCheckPad;
 using Pizzerie.Domain.Models.GuestCheckPad;
 
 namespace Pizzerie.Business.Services
@@ -10,45 +13,91 @@ namespace Pizzerie.Business.Services
         #region ..:: Variables ::..
 
         private readonly IEmployeeCheckPadRepository _repository;
+        private readonly IValidationStrategy<EmployeeCheckPadCreateRequest> _createValidationStrategy;
+        private readonly IValidationStrategy<EmployeeCheckPadEditRequest> _editValidationStrategy;
 
         #endregion
 
         #region ..:: Constructor ::..
 
-        public EmployeeCheckPadService(IEmployeeCheckPadRepository repository)
+        public EmployeeCheckPadService(IEmployeeCheckPadRepository repository,
+            IValidationStrategy<EmployeeCheckPadCreateRequest> createValidationStrategy,
+            IValidationStrategy<EmployeeCheckPadEditRequest> editValidationStrategy)
         {
             _repository = repository;
+            _createValidationStrategy = createValidationStrategy;
+            _editValidationStrategy = editValidationStrategy;
         }
 
         #endregion
 
         #region ..:: Methods ::..
 
-        public Task<ContentResult> CreateAsync(EmployeeCheckPadCreateRequest model)
+        public async Task<ContentResponse> CreateAsync(EmployeeCheckPadCreateRequest? model)
         {
+            if (model != null)
+            {
+                var validateResult = _createValidationStrategy.Validate(model);
+                if (!validateResult.Success)
+                {
+                    return validateResult;
+                }
+            }
+
+            var orderExists = await _repository.ExistsOpenOrderForCustomerAsync(model.ClientName, model.TableNumber);
+            if (orderExists)
+            {
+                return new ContentResponse
+                {
+                    Message = $"An open order already exists for customer {model.ClientName}.",
+                    Success = false
+                };
+            }
+
             try
             {
-                return _repository.CreateAsync(model);
+                var response = await _repository.CreateAsync(model);
+                return response;
             }
-            catch(Exception)
+            catch (KeyNotFoundException kEx)
             {
-                return Task.FromResult(new ContentResult
-                {                    
-                    Message = "Something went wrong",
+                Debug.WriteLine(kEx.Message);
+                return new ContentResponse
+                {
+                    Message = kEx.Message,
                     Success = false
-                });
+                };
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return new ContentResponse
+                {
+                    Message = "Something went wrong, please try again later.",
+                    Success = false
+                };
             }
         }
 
-        public Task<ContentResult> DeleteAsync(string idCheckpad, string idEmployee)
+        public async Task<ContentResponse> DeleteAsync(string idCheckpad, string idEmployee)
         {
             try
             {
-                return _repository.DeleteAsync(idCheckpad, idEmployee);
+                return await _repository.DeleteAsync(idCheckpad, idEmployee);
             }
-            catch (Exception)
+            catch (KeyNotFoundException kEx)
             {
-                return Task.FromResult(new ContentResult
+                Debug.Write(kEx.Message);
+                return await Task.FromResult(new ContentResponse
+                {
+                    Message = kEx.Message,
+                    Success = false
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.Write(ex.Message);
+                return await Task.FromResult(new ContentResponse
                 {
                     Message = "Something went wrong",
                     Success = false
@@ -56,35 +105,72 @@ namespace Pizzerie.Business.Services
             }
         }
 
-        public Task<ContentResult> EditAsync(string idCheckpad, string idEmployee, string clientName)
+        public async Task<ContentResponse> EditAsync(EmployeeCheckPadEditRequest? model)
         {
             try
             {
-                return _repository.EditAsync(idCheckpad, idEmployee, clientName);
-            }
-            catch (Exception)
-            {
-                return Task.FromResult(new ContentResult
+                if (model != null)
                 {
-                    Message = "Something went wrong",
-                    Success = false
-                });
-            }
-        }
+                    var validateResult = _editValidationStrategy.Validate(model);
+                    if (!validateResult.Success)
+                    {
+                        return validateResult;
+                    }
+                }
 
-        public Task<ContentResult> EditAsync(EmployeeCheckPadEditRequest model)
-        {
-            try
-            {
-                return _repository.EditAsync(model);
-            }
-            catch (Exception)
-            {
-                return Task.FromResult(new ContentResult
+                var orderExists = model != null && await _repository.OrderExistsAsync(model.Id);
+                if (!orderExists)
                 {
-                    Message = "Something went wrong",
-                    Success = false
-                });
+                    return new ContentResponse
+                    {
+                        Success = false,
+                        Message = "Order not found."
+                    };
+                }
+
+                var canEdit = model != null && await _repository.CanEditOrderAsync(model.Id);
+                if (!canEdit)
+                {
+                    return new ContentResponse
+                    {
+                        Success = false,
+                        Message = "Order cannot be edited at its current status."
+                    };
+                }
+
+                if (model != null)
+                {
+                    await _repository.EditAsync(model);
+                    return new ContentResponse
+                    {
+                        Success = true,
+                        Message = "Order updated successfully."
+                    };
+                }
+
+                return new ContentResponse
+                {
+                    Success = true,
+                    Message = "It looks like that you did not input the checkpad content."
+                };
+            }
+            catch (KeyNotFoundException kEx)
+            {
+                Debug.Write(kEx.Message);
+                return new ContentResponse
+                {
+                    Success = false,
+                    Message = $"An error occurred while editing the order"
+                };
+            }
+            catch (Exception ex)
+            {
+                Debug.Write(ex.Message);
+                return new ContentResponse
+                {
+                    Success = false,
+                    Message = $"An error occurred while editing the order"
+                };
             }
         }
 
@@ -100,7 +186,7 @@ namespace Pizzerie.Business.Services
             }
         }
 
-        public Task<IEnumerable<EmployeeCheckPadGetResponse>> GetEmployeeAsync(string idEmployee)
+        public Task<IEnumerable<EmployeeCheckPadGetResponse>> GetEmployeeAsync(Guid idEmployee)
         {
             try
             {
