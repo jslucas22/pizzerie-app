@@ -18,4 +18,5 @@ export const Shadows = styled.View.attrs({
   width: ${(p) => (p.width ? p.width + "px" : "100%")};
   height: ${(p) => (p.height ? p.height + "px" : "100%")};
   border-radius: ${(p) => (p.borderRadius ? p.borderRadius : "16px")};
+  overflow: hidden;
 `;

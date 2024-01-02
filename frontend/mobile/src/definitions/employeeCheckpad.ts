@@ -1,6 +1,6 @@
 import { Product } from "./product";
 
-export interface employeeCheckpad {
+export interface EmployeeCheckpad {
   Id: string;
   EmployeeName: string;
   Clients: string[];

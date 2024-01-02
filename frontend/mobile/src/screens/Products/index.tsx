@@ -1,12 +1,15 @@
 import React from "react";
-
-import * as S from "./styles";
-import ProductCard from "components/ProductCard";
 import { FlatList } from "react-native";
+
+import ProductCard from "components/ProductCard";
+
 import { Product } from "definitions/product";
 import { ScreenBaseProps } from "utils/index";
 
-const Menu: React.FC<ScreenBaseProps<"Menu">> = () => {
+import * as S from "./styles";
+import ProductsHeader from "./header";
+
+const Products: React.FC<ScreenBaseProps<"Products">> = () => {
   const products: Product[] = [
     {
       Id: "1",
@@ -19,6 +22,7 @@ const Menu: React.FC<ScreenBaseProps<"Menu">> = () => {
 
   return (
     <S.Container>
+      <ProductsHeader />
       <FlatList
         data={products}
         renderItem={(item) => <ProductCard product={item.item} />}
@@ -28,4 +32,4 @@ const Menu: React.FC<ScreenBaseProps<"Menu">> = () => {
   );
 };
 
-export default Menu;
+export default Products;

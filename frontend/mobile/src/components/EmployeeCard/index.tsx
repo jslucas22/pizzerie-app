@@ -1,25 +1,19 @@
 import React from "react";
 
 import * as S from "./styles";
-import { Product } from "definitions/product";
+import { Employee } from "definitions/employee";
 import { View } from "react-native";
 import Spacer from "components/Spacer";
 import { Shadows } from "components/Shadows";
-import Icon, { IconProps } from "components/Icon";
+import Icon from "components/Icon";
 import { useTheme } from "styled-components/native";
 
 type Props = {
-  product: Product;
+  employee: Employee;
 };
 
-const ProductCard: React.FC<Props> = ({ product }) => {
+const EmployeeCard: React.FC<Props> = ({ employee }) => {
   const theme = useTheme();
-  const icon: IconProps =
-    product.Category == "Pizzas"
-      ? { name: "pizza-slice", type: "fontAwesome5", size: 0 }
-      : product.Category == "Bebidas"
-      ? { name: "drink", type: "entypo", size: 0 }
-      : { name: "question", type: "fontAwesome", size: 0 };
 
   return (
     <Shadows height="100">
@@ -34,8 +28,8 @@ const ProductCard: React.FC<Props> = ({ product }) => {
           }}
         >
           <Icon
-            name={icon.name}
-            type={icon.type}
+            name="???"
+            type="fontAwesome5"
             size={50}
             right={false}
             color={theme.colors.card}
@@ -43,11 +37,13 @@ const ProductCard: React.FC<Props> = ({ product }) => {
           />
         </View>
         <S.Content>
-          <S.Title>{product.Name}</S.Title>
+          <S.Title>
+            {employee.Id} - {employee.Name}
+          </S.Title>
           <Spacer height={14} />
-          <S.Subtitle>Categoria: {product.Category}</S.Subtitle>
+          <S.Subtitle>Login: {employee.Login}</S.Subtitle>
           <Spacer height={8} />
-          <S.Subtitle>Preço: R${product.Price}</S.Subtitle>
+          <S.Subtitle>Tipo Usuário: R${employee.TipoUsuario}</S.Subtitle>
           <Spacer height={8} />
         </S.Content>
       </S.Container>
@@ -55,4 +51,4 @@ const ProductCard: React.FC<Props> = ({ product }) => {
   );
 };
 
-export default ProductCard;
+export default EmployeeCard;
