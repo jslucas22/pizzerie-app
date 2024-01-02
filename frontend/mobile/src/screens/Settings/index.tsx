@@ -1,16 +1,16 @@
 import React, { useCallback, useEffect, useState } from "react";
+import Toast from "react-native-root-toast";
+
+import Input from "components/Input";
+import Spacer from "components/Spacer";
+import Button from "components/Button";
+import Loading from "components/Loading";
+import ErrorPage from "components/ErrorPage";
+
+import { ScreenBaseProps } from "utils/index";
+import { useTheme } from "styled-components/native";
 
 import * as S from "./styles";
-import { ScreenBaseProps } from "../../utils";
-import Input from "../../components/Input";
-import Spacer from "../../components/Spacer";
-import Button from "../../components/Button";
-import { getSetting } from "../stored/settings/getSetting";
-import Loading from "../../components/Loading";
-import { saveSetting } from "../stored/settings/addSetting";
-import Toast from "react-native-root-toast";
-import { useTheme } from "styled-components/native";
-import ErrorPage from "../../components/ErrorPage";
 
 type Props = ScreenBaseProps<"Settings">;
 
@@ -20,12 +20,7 @@ const Settings: React.FC<Props> = ({ navigation, route }) => {
   const [desks, setDesks] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  const getDesks = useCallback(async () => {
-    const d = await getSetting();
-    if (d.tables) {
-      setDesks(d.tables);
-    }
-  }, []);
+  const getDesks = useCallback(async () => {}, []);
 
   useEffect(() => {
     getDesks();
@@ -34,7 +29,6 @@ const Settings: React.FC<Props> = ({ navigation, route }) => {
   const handleSaveDesks = async () => {
     setLoading(true);
     try {
-      await saveSetting({ tables: desks });
       Toast.show("Configuração salva com sucesso!", {
         backgroundColor: theme.colors.status.active,
       });

@@ -1,19 +1,19 @@
 /* eslint-disable jsx-a11y/alt-text */
 import React, { useRef, useState } from "react";
-import { Image, TextInput, View } from "react-native";
+import { TextInput, View } from "react-native";
 
 import Toast from "react-native-root-toast";
 
-import Input from "../../components/Input";
-import Button from "../../components/Button";
-import Spacer from "../../components/Spacer";
-import InputPassword from "../../components/InputPassword";
+import Input from "components/Input";
+import Button from "components/Button";
+import Spacer from "components/Spacer";
+import InputPassword from "components/InputPassword";
 
-import { focusNextInput, ScreenBaseProps } from "../../utils";
+import { focusNextInput, ScreenBaseProps } from "utils/index";
 import { useTheme } from "styled-components/native";
-import Version from "../../components/Version";
+import Version from "components/Version";
 import * as S from "./styles";
-import Icon from "../../components/Icon";
+import Icon from "components/Icon";
 
 type Props = ScreenBaseProps<"Login">;
 

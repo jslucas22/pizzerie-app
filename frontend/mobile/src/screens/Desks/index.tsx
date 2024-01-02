@@ -2,21 +2,15 @@ import React, { useCallback, useEffect, useState } from "react";
 
 import * as S from "./styles";
 import { FlatList, LogBox } from "react-native";
-import DeskCard from "../../components/DeskCard";
-import { getSetting } from "../stored/settings/getSetting";
-import Spacer from "../../components/Spacer";
+import DeskCard from "components/DeskCard";
+import Spacer from "components/Spacer";
 
 const Desks: React.FC = () => {
   LogBox.ignoreAllLogs();
   const [deskNumber, setDeskNumber] = useState(0);
   const desks: number[] = [];
 
-  const getDesks = useCallback(async () => {
-    const d = await getSetting();
-    if (d.tables) {
-      setDeskNumber(d.tables);
-    }
-  }, []);
+  const getDesks = useCallback(async () => {}, []);
 
   useEffect(() => {
     getDesks();

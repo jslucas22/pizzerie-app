@@ -1,18 +1,23 @@
 import React from "react";
 
-import Icon from "../Icon";
+import RNPickerSelect from "react-native-picker-select";
 
-import { useTheme } from "styled-components/native";
 import * as S from "./styles";
 
+interface Item {
+  label: string;
+  value: string;
+}
+
 interface SelectInputProps {
-  value?: string;
+  value?: any;
   disabled?: boolean;
   label?: string;
   labelSecondary?: boolean;
   width?: number;
-  onPress?: () => void;
-  onRemove?: () => void;
+  onValueChange: (value: any) => void;
+  placeholder?: string;
+  items: Item[];
 }
 
 const SelectInput: React.FC<SelectInputProps> = ({
@@ -21,28 +26,20 @@ const SelectInput: React.FC<SelectInputProps> = ({
   disabled,
   labelSecondary,
   width,
-  onPress,
-  onRemove,
+  onValueChange,
+  placeholder,
+  items,
 }) => {
-  const theme = useTheme();
   return (
     <S.Container width={width}>
       <S.Label secondary={labelSecondary}>{!!label ? label : ""}</S.Label>
-      <S.Button disabled={disabled} onPress={onPress} activeOpacity={0.89}>
-        <S.ButtonText hasText={!!value}>
-          {!!value ? value : "Escolha..."}
-        </S.ButtonText>
-        <Icon
-          type="entypo"
-          name="cross"
-          size={20}
-          disabled={disabled}
-          onPress={onRemove}
-          color={
-            disabled ? theme.colors.disabled : theme.colors.input.placeholder
-          }
-        />
-      </S.Button>
+      <RNPickerSelect
+        onValueChange={onValueChange}
+        disabled={disabled}
+        value={value}
+        placeholder={placeholder}
+        items={items}
+      />
     </S.Container>
   );
 };
