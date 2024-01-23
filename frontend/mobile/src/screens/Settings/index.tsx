@@ -12,9 +12,10 @@ import { useTheme } from "styled-components/native";
 
 import * as S from "./styles";
 
-type Props = ScreenBaseProps<"Settings">;
-
-const Settings: React.FC<Props> = ({ navigation, route }) => {
+const Settings: React.FC<ScreenBaseProps<"Settings">> = ({
+  navigation,
+  route,
+}) => {
   const theme = useTheme();
 
   const [desks, setDesks] = useState(0);
@@ -49,6 +50,7 @@ const Settings: React.FC<Props> = ({ navigation, route }) => {
         value={desks.toString()}
         onChangeText={(s) => setDesks(Number(s))}
         textAlign="center"
+        keyboardType="numeric"
       />
       <Spacer height={24} />
       <Button value="Salvar alterações" onPress={handleSaveDesks} />

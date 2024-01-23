@@ -3,6 +3,8 @@ import React from "react";
 import RNPickerSelect from "react-native-picker-select";
 
 import * as S from "./styles";
+import { useTheme } from "styled-components/native";
+import { View } from "react-native";
 
 interface Item {
   label: string;
@@ -30,16 +32,26 @@ const SelectInput: React.FC<SelectInputProps> = ({
   placeholder,
   items,
 }) => {
+  const theme = useTheme();
   return (
     <S.Container width={width}>
       <S.Label secondary={labelSecondary}>{!!label ? label : ""}</S.Label>
-      <RNPickerSelect
-        onValueChange={onValueChange}
-        disabled={disabled}
-        value={value}
-        placeholder={placeholder}
-        items={items}
-      />
+      <View
+        style={{
+          backgroundColor: !disabled
+            ? theme.colors.input.backgroundColor
+            : theme.colors.disabled,
+          borderRadius: 4,
+        }}
+      >
+        <RNPickerSelect
+          onValueChange={onValueChange}
+          disabled={disabled}
+          value={value}
+          placeholder={placeholder}
+          items={items}
+        />
+      </View>
     </S.Container>
   );
 };

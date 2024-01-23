@@ -16,6 +16,7 @@ import EmployeeForm from "screens/EmployeeForm";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "styled-components/native";
 import { RootStackParamList } from "./stack";
+import Orders from "screens/Orders";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -85,6 +86,11 @@ export const StackRoutes: React.FC = () => {
         name="Products"
         component={Products}
         options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Orders"
+        component={Orders}
+        options={{ headerTitle: "Pedidos" }}
       />
     </Stack.Navigator>
   );

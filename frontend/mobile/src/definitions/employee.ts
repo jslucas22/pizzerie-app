@@ -1,7 +1,8 @@
 export interface Employee {
   Id: string;
   Name: string;
-  Login: string;
-  Senha: string;
-  TipoUsuario: string;
+  Username: string;
+  Password: string;
+  LevelId?: number;
+  CreatedAt?: Date;
 }

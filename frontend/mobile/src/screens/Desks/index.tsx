@@ -1,14 +1,17 @@
 import React, { useCallback, useEffect, useState } from "react";
 
 import * as S from "./styles";
-import { FlatList, LogBox } from "react-native";
+import { FlatList, LogBox, View } from "react-native";
 import DeskCard from "components/DeskCard";
 import Spacer from "components/Spacer";
 
 const Desks: React.FC = () => {
   LogBox.ignoreAllLogs();
   const [deskNumber, setDeskNumber] = useState(0);
-  const desks: number[] = [];
+  const desks: number[] = [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
+    22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32,
+  ];
 
   const getDesks = useCallback(async () => {}, []);
 
@@ -26,21 +29,9 @@ const Desks: React.FC = () => {
 
   return (
     <S.Container>
-      <FlatList
-        data={desks}
-        renderItem={({ item }) => <DeskCard number={item} />}
-        style={{
-          paddingVertical: 24,
-          paddingHorizontal: 16,
-        }}
-        contentContainerStyle={{
-          gap: 16,
-          flexDirection: "row",
-          flexWrap: "wrap",
-        }}
-        showsVerticalScrollIndicator={false}
-        ListFooterComponent={<Spacer height={40} />}
-      />
+      {desks.map((item) => (
+        <DeskCard number={item} />
+      ))}
     </S.Container>
   );
 };

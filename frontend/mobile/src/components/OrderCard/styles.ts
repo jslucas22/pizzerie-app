@@ -21,6 +21,8 @@ export const Content = styled.View`
 `;
 
 export const Title = styled.Text`
+  width: 100%;
+
   font-family: ${({ theme }) => theme.fonts.semibold};
   font-size: ${RFValue(14)}px;
   line-height: ${RFValue(18)}px;

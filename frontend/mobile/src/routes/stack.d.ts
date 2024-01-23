@@ -2,14 +2,15 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 export type RootStackParamList = {
   Desks: undefined | { newDesk?: boolean };
-  EmployeeForm: { id?: number } | undefined;
+  EmployeeForm: { id?: string } | undefined;
   Employees: undefined;
   FinishOrders: undefined;
   Home: undefined;
   Login: undefined;
   Menu: undefined;
-  Order: undefined;
-  ProductForm: { id?: number } | undefined;
+  Order: { id: ?string } | undefined;
+  Orders: undefined;
+  ProductForm: { id?: string } | undefined;
   Products: undefined;
   Settings: undefined;
 };

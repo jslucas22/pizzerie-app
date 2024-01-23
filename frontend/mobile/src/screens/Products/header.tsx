@@ -18,14 +18,11 @@ const ProductsHeader: React.FC<Props> = ({ onAdd, onGoBack }) => {
   const insets = useSafeAreaInsets();
 
   return (
-    <HeaderContainer
-      insetTop={insets.top}
-      style={{ justifyContent: "flex-start" }}
-    >
+    <HeaderContainer insetTop={insets.top}>
       <Icon
         type="feather"
         name="arrow-left"
-        size={24}
+        size={30}
         right={false}
         onPress={onGoBack}
         color={theme.colors.text.secondary}
@@ -34,7 +31,8 @@ const ProductsHeader: React.FC<Props> = ({ onAdd, onGoBack }) => {
       <Icon
         type="antdesign"
         name="plus"
-        size={24}
+        size={30}
+        right={false}
         onPress={onAdd}
         color={theme.colors.text.secondary}
       />

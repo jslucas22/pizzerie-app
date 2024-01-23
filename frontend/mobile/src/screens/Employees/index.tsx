@@ -1,31 +1,46 @@
 import React from "react";
+import { FlatList } from "react-native";
 
-import * as S from "./styles";
-import { FlatList } from "react-native-gesture-handler";
 import EmployeeCard from "components/EmployeeCard";
-import { Employee } from "definitions/employee";
-import EmployeeHeader from "screens/EmployeeForm/header";
 
-const Employees: React.FC = () => {
-  const products: Employee[] = [
+import { Employee } from "definitions/employee";
+import { ScreenBaseProps } from "utils/index";
+
+import EmployeesHeader from "./header";
+import * as S from "./styles";
+
+const Employees: React.FC<ScreenBaseProps<"Employees">> = ({ navigation }) => {
+  const employees: Employee[] = [
     {
       Id: "1",
       Name: "Administrador",
-      Login: "admin",
-      Senha: "123456",
-      TipoUsuario: "ADMSYS",
+      Username: "admin",
+      Password: "123456",
+      LevelId: 2,
     },
   ];
 
   return (
-    <S.Container>
-      <EmployeeHeader />
-      <FlatList
-        data={products}
-        renderItem={(item) => <EmployeeCard employee={item.item} />}
-        style={{ paddingHorizontal: 24, paddingVertical: 16 }}
+    <>
+      <EmployeesHeader
+        onGoBack={navigation.goBack}
+        onAdd={() => navigation.navigate("EmployeeForm")}
       />
-    </S.Container>
+      <S.Container>
+        <FlatList
+          data={employees}
+          renderItem={({ item }) => (
+            <EmployeeCard
+              employee={item}
+              onPress={() =>
+                navigation.navigate("EmployeeForm", { id: item.Id })
+              }
+            />
+          )}
+          style={{ paddingHorizontal: 24, paddingVertical: 16 }}
+        />
+      </S.Container>
+    </>
   );
 };
 

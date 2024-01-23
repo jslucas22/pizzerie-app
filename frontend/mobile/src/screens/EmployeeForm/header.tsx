@@ -9,7 +9,7 @@ import HeaderContainer from "components/headers/headerContainer";
 import { useTheme } from "styled-components/native";
 
 interface Props {
-  id?: number;
+  id?: string;
   onGoBack?: () => void;
 }
 

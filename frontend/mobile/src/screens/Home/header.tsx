@@ -73,7 +73,7 @@ const HomeHeader: React.FC<Props> = ({ onExit }) => {
           <Icon
             type="fontAwesome"
             name="power-off"
-            size={20}
+            size={26}
             right={false}
             color={theme.colors.text.secondary}
             onPress={openExitModal}

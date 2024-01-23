@@ -16,10 +16,10 @@ const Home: React.FC<ScreenBaseProps<"Home">> = ({ navigation }) => {
 
   const user: Employee = {
     Id: "hsdjashdaskhdakjshd",
-    Login: "manobrown",
+    Username: "manobrown",
     Name: "Mano Brown",
-    Senha: "1234",
-    TipoUsuario: "ADMSYS",
+    Password: "1234",
+    LevelId: 2,
   };
 
   const handleLogout = () => {
@@ -37,22 +37,22 @@ const Home: React.FC<ScreenBaseProps<"Home">> = ({ navigation }) => {
         }}
       />
       <S.Container>
-        {user.TipoUsuario === "ADMSYS" ? (
+        {user.LevelId === 2 ? (
           <>
             <OptionsCard
-              name="Adicionar Funcionário"
+              name="Ver Funcionários"
               icon={{ name: "group-add", type: "material", size: 24 }}
-              onPress={() => navigation.navigate("Menu")}
+              onPress={() => navigation.navigate("Employees")}
             />
             <OptionsCard
-              name="Adicionar Produto"
+              name="Ver Produtos"
               icon={{ name: "library-add", type: "material", size: 24 }}
-              onPress={() => navigation.navigate("Desks")}
+              onPress={() => navigation.navigate("Products")}
             />
             <OptionsCard
-              name="Finalizar Pedido"
+              name="Ver Pedidos"
               icon={{ name: "library-add-check", type: "material", size: 24 }}
-              onPress={() => navigation.navigate("Desks", { newDesk: true })}
+              onPress={() => navigation.navigate("Orders")}
             />
             <OptionsCard
               name="Configurações"

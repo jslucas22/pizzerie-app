@@ -1,23 +1,25 @@
 import React from "react";
+import { View } from "react-native";
+
+import Icon from "components/Icon";
+import { Shadows } from "components/Shadows";
+
+import { Employee } from "definitions/employee";
+import { useTheme } from "styled-components/native";
 
 import * as S from "./styles";
-import { Employee } from "definitions/employee";
-import { View } from "react-native";
-import Spacer from "components/Spacer";
-import { Shadows } from "components/Shadows";
-import Icon from "components/Icon";
-import { useTheme } from "styled-components/native";
 
 type Props = {
   employee: Employee;
+  onPress?: () => void;
 };
 
-const EmployeeCard: React.FC<Props> = ({ employee }) => {
+const EmployeeCard: React.FC<Props> = ({ employee, onPress }) => {
   const theme = useTheme();
 
   return (
-    <Shadows height="100">
-      <S.Container>
+    <Shadows>
+      <S.Container onPress={onPress}>
         <View
           style={{
             width: 90,
@@ -28,8 +30,8 @@ const EmployeeCard: React.FC<Props> = ({ employee }) => {
           }}
         >
           <Icon
-            name="???"
-            type="fontAwesome5"
+            name="user"
+            type="feather"
             size={50}
             right={false}
             color={theme.colors.card}
@@ -37,14 +39,22 @@ const EmployeeCard: React.FC<Props> = ({ employee }) => {
           />
         </View>
         <S.Content>
-          <S.Title>
+          <S.Title numberOfLines={1} ellipsizeMode="tail">
             {employee.Id} - {employee.Name}
           </S.Title>
-          <Spacer height={14} />
-          <S.Subtitle>Login: {employee.Login}</S.Subtitle>
-          <Spacer height={8} />
-          <S.Subtitle>Tipo Usuário: R${employee.TipoUsuario}</S.Subtitle>
-          <Spacer height={8} />
+          <S.Subtitle bold>
+            Login: <S.Subtitle>{employee.Username}</S.Subtitle>
+          </S.Subtitle>
+          <S.Subtitle bold>
+            Tipo Usuário:{" "}
+            <S.Subtitle>
+              {employee.LevelId === 2
+                ? "Administrador"
+                : employee.LevelId === 1
+                ? "Cozinheiro"
+                : "Garçom"}
+            </S.Subtitle>
+          </S.Subtitle>
         </S.Content>
       </S.Container>
     </Shadows>

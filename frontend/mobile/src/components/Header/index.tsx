@@ -1,4 +1,5 @@
-/* eslint-disable react/display-name */
+import React from "react";
+
 import { EdgeInsets } from "react-native-safe-area-context";
 import { BorderlessButton } from "react-native-gesture-handler";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack";
@@ -20,7 +21,7 @@ const createHeader = (insets: EdgeInsets) => {
           <Icon
             type="feather"
             name="arrow-left"
-            size={24}
+            size={30}
             right={false}
             color={options.headerTintColor}
           />
