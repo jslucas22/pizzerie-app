@@ -1,11 +1,13 @@
 import React from "react";
-
-import * as S from "./styles";
-import { Product } from "definitions/product";
 import { View } from "react-native";
+
 import { Shadows } from "components/Shadows";
 import Icon, { IconProps } from "components/Icon";
+
+import { Product } from "definitions/product";
+
 import { useTheme } from "styled-components/native";
+import * as S from "./styles";
 
 type Props = {
   product: Product;

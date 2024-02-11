@@ -51,7 +51,7 @@ const OrderCard: React.FC<Props> = ({ order, onPress }) => {
           <S.Subtitle bold>
             Data Início:{" "}
             <S.Subtitle>
-              {order.CreatedAt.toLocaleString("pt-BR", {
+              {order.CreatedAt?.toLocaleString("pt-BR", {
                 day: "numeric",
                 month: "numeric",
                 year: "numeric",
@@ -63,7 +63,7 @@ const OrderCard: React.FC<Props> = ({ order, onPress }) => {
           <S.Subtitle bold>
             Últ. Alteração:{" "}
             <S.Subtitle>
-              {order.UpdatedAt.toLocaleString("pt-BR", {
+              {order.UpdatedAt?.toLocaleString("pt-BR", {
                 day: "numeric",
                 month: "numeric",
                 year: "numeric",

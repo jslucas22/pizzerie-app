@@ -1,7 +1,8 @@
 import React from "react";
 
+import { Shadows } from "components/Shadows";
+
 import * as S from "./styles";
-import { Shadows } from "../Shadows";
 
 const DeskCard: React.FC<{ number: number; disabled?: boolean }> = ({
   number,

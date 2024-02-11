@@ -1,7 +1,7 @@
 import React from "react";
 import { FlatList } from "react-native";
 
-import EmployeeCard from "components/EmployeeCard";
+import EmployeeCard from "components/Cards/EmployeeCard";
 
 import { Employee } from "definitions/employee";
 import { ScreenBaseProps } from "utils/index";
@@ -12,7 +12,8 @@ import * as S from "./styles";
 const Employees: React.FC<ScreenBaseProps<"Employees">> = ({ navigation }) => {
   const employees: Employee[] = [
     {
-      Id: "1",
+      Id: 1,
+      Uuid: 'dghaksdghashdajksndjknhajkshdjkah',
       Name: "Administrador",
       Username: "admin",
       Password: "123456",

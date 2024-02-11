@@ -1,6 +1,6 @@
 import React from "react";
 
-import Icon, { IconProps } from "../Icon";
+import Icon, { IconProps } from "components/Icon";
 
 import { useTheme } from "styled-components/native";
 import * as S from "./styles";
