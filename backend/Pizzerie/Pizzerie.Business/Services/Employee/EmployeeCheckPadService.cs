@@ -160,7 +160,7 @@ namespace Pizzerie.Business.Services
                 return new ContentResponse
                 {
                     Success = false,
-                    Message = $"An error occurred while editing the order"
+                    Message = kEx.Message
                 };
             }
             catch (Exception ex)
