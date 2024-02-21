@@ -39,7 +39,7 @@ namespace Pizzerie.Data.Repositories
         {
             using var connection = _connectionFactory.GetConnection();
             var exists = await connection.QueryFirstOrDefaultAsync<bool>(
-                "SELECT EXISTS(SELECT 1 FROM orders WHERE uuid = @OrderId)",
+                "SELECT EXISTS(SELECT 1 FROM orders WHERE id = @OrderId)",
                 new { OrderId = orderId });
 
             return exists;
@@ -49,7 +49,7 @@ namespace Pizzerie.Data.Repositories
         {
             using var connection = _connectionFactory.GetConnection();
             var status = await connection.QueryFirstOrDefaultAsync<string>(
-                "SELECT status FROM orders WHERE uuid = @OrderId",
+                "SELECT status FROM orders WHERE id = @OrderId",
                 new { OrderId = orderId });
 
             return status == "Open";
@@ -64,32 +64,20 @@ namespace Pizzerie.Data.Repositories
             using var transaction = connection.BeginTransaction();
             try
             {
-                const string employeeIdQuery = @"
-                SELECT 
-                    id 
-                FROM 
-                    employees 
-                WHERE uuid = @EmployeeUUID";
-
-                var employeeId = await connection.QuerySingleOrDefaultAsync<int?>(employeeIdQuery,
-                    new { EmployeeUUID = model?.IdEmployee }, transaction);
-
-                if (!employeeId.HasValue)
-                {
-                    throw new KeyNotFoundException("eca-01: Employee not found.");
-                }
+                // check employee exists
 
                 const string orderInsertQuery = @"
-                INSERT INTO orders (employee_id, table_number, customer_name, total_value, payment_method, status)
-                VALUES (@EmployeeId, @TableNumber, @CustomerName, @TotalValue, @PaymentMethod, @Status)
+                INSERT INTO orders (id, employee_id, table_number, customer_name, total_value, payment_method, status)
+                VALUES (@Id, @EmployeeId, @TableNumber, @CustomerName, @TotalValue, @PaymentMethod, @Status)
                 RETURNING id;";
 
                 if (model?.Products != null)
                 {
                     var totalValue = model.Products.Sum(p => p.Price);
-                    var orderId = await connection.QuerySingleAsync<int>(orderInsertQuery, new
+                    var orderId = await connection.QuerySingleAsync<Guid>(orderInsertQuery, new
                     {
-                        EmployeeId = employeeId,
+                        Id = Guid.NewGuid(),
+                        EmployeeId = model.IdEmployee,
                         model.TableNumber,
                         CustomerName = model.ClientName,
                         TotalValue = totalValue,
@@ -99,23 +87,24 @@ namespace Pizzerie.Data.Repositories
 
                     foreach (var product in model.Products)
                     {
-                        const string productIdQuery = "SELECT id FROM products WHERE uuid = @ProductUUID";
-                        var productId = await connection.QuerySingleOrDefaultAsync<int?>(productIdQuery,
-                            new { ProductUUID = product.Id }, transaction);
+                        //const string productIdQuery = "SELECT id FROM products WHERE id = @ProductId";
+                        //var productId = await connection.QuerySingleOrDefaultAsync<int?>(productIdQuery,
+                        //    new { ProductId = product.Id }, transaction);
 
-                        if (!productId.HasValue)
-                        {
-                            throw new KeyNotFoundException($"eca-02: Product not found.");
-                        }
+                        //if (!productId.HasValue)
+                        //{
+                        //    throw new KeyNotFoundException($"eca-02: Product not found.");
+                        //}
 
                         const string insertQuery = @"
-                        INSERT INTO order_items (order_id, product_id, quantity)
-                        VALUES (@OrderId, @ProductId, @Quantity);";
+                        INSERT INTO order_items (id, order_id, product_id, quantity)
+                        VALUES (@Id, @OrderId, @ProductId, @Quantity);";
 
                         await connection.ExecuteAsync(insertQuery, new
                         {
+                            Id = Guid.NewGuid(),
                             OrderId = orderId,
-                            ProductId = productId.Value,
+                            ProductId = product.Id,
                             product.Quantity
                         }, transaction);
                     }
@@ -124,7 +113,8 @@ namespace Pizzerie.Data.Repositories
                 transaction.Commit();
                 return new ContentResponse
                 {
-                    Message = $"The checkpad was created successfully for client {model?.ClientName}", Success = true
+                    Message = $"The checkpad was created successfully for client {model?.ClientName}",
+                    Success = true
                 };
             }
             catch (Exception ex)
@@ -146,10 +136,10 @@ namespace Pizzerie.Data.Repositories
                 SELECT COUNT(1)
                 FROM orders o
                 JOIN employees e ON o.employee_id = e.id
-            WHERE o.uuid = @OrderUuid AND e.uuid = @EmployeeUuid;";
+                WHERE o.id = @OrderId AND e.id = @EmployeeId;";
 
                 var orderCount = await connection.ExecuteScalarAsync<int>(validationQuery,
-                    new { OrderUuid = Guid.Parse(idCheckpad), EmployeeUuid = Guid.Parse(idEmployee) }, transaction);
+                    new { OrderId = Guid.Parse(idCheckpad), EmployeeId = Guid.Parse(idEmployee) }, transaction);
 
                 if (orderCount == 0)
                 {
@@ -157,12 +147,12 @@ namespace Pizzerie.Data.Repositories
                 }
 
                 const string deleteOrderItemsQuery =
-                    "DELETE FROM order_items WHERE order_id = (SELECT id FROM orders WHERE uuid = @OrderUuid);";
-                await connection.ExecuteAsync(deleteOrderItemsQuery, new { OrderUuid = Guid.Parse(idCheckpad) },
+                    "DELETE FROM order_items WHERE order_id = (SELECT id FROM orders WHERE id = @OrderId);";
+                await connection.ExecuteAsync(deleteOrderItemsQuery, new { OrderId = Guid.Parse(idCheckpad) },
                     transaction);
 
-                const string deleteOrderQuery = "DELETE FROM orders WHERE uuid = @OrderUuid;";
-                await connection.ExecuteAsync(deleteOrderQuery, new { OrderUuid = Guid.Parse(idCheckpad) },
+                const string deleteOrderQuery = "DELETE FROM orders WHERE id = @OrderId;";
+                await connection.ExecuteAsync(deleteOrderQuery, new { OrderId = Guid.Parse(idCheckpad) },
                     transaction);
 
                 transaction.Commit();
@@ -207,9 +197,9 @@ namespace Pizzerie.Data.Repositories
                     payment_method = COALESCE(@PaymentMethod, payment_method),
                     status = COALESCE(@Status, status),
                     note = COALESCE(@Note, note)
-                WHERE uuid = @OrderId RETURNING id;";
+                WHERE id = @OrderId RETURNING id;";
 
-                var updatedOrderId = await connection.ExecuteAsync(orderUpdateQuery, new
+                var updatedOrderId = await connection.QueryAsync<Guid>(orderUpdateQuery, new
                 {
                     OrderId = model.Id,
                     model.TableNumber,
@@ -222,14 +212,14 @@ namespace Pizzerie.Data.Repositories
                 if (model.Products != null)
                     foreach (var product in model.Products)
                     {
-                        const string productIdQuery = "SELECT id FROM products WHERE uuid = @ProductUUID";
-                        var productId = await connection.QuerySingleOrDefaultAsync<int?>(productIdQuery,
-                            new { ProductUUID = product.Id }, transaction);
+                        //const string productIdQuery = "SELECT id FROM products WHERE id = @ProductId";
+                        //var productId = await connection.QuerySingleOrDefaultAsync<int?>(productIdQuery,
+                        //    new { ProductId = product.Id }, transaction);
 
-                        if (productId == null)
-                        {
-                            throw new KeyNotFoundException($"eea-01: Product not found.");
-                        }
+                        //if (productId == null)
+                        //{
+                        //    throw new KeyNotFoundException($"eea-01: Product not found.");
+                        //}
 
                         if (product.Remove)
                         {
@@ -238,7 +228,7 @@ namespace Pizzerie.Data.Repositories
                             await connection.ExecuteAsync(removeProductQuery, new
                             {
                                 OrderId = model.Id,
-                                ProductId = productId
+                                ProductId = product.Id
                             }, transaction);
                         }
                         else
@@ -247,33 +237,35 @@ namespace Pizzerie.Data.Repositories
                                 "SELECT 1 FROM order_items WHERE order_id = @OrderId AND product_id = @ProductId";
                             var productExists = await connection.QuerySingleOrDefaultAsync<bool>(productExistsQuery, new
                             {
-                                OrderId = updatedOrderId,
-                                ProductId = productId
+                                OrderId = model.Id,
+                                ProductId = product.Id
                             }, transaction);
 
                             if (productExists)
                             {
                                 const string updateProductQuery = @"
                                 UPDATE order_items
-                                SET quantity = @Quantity
+                                SET quantity = @Quantity, id_order_status = @IdOrderStatus            
                                 WHERE order_id = @OrderId AND product_id = @ProductId";
                                 await connection.ExecuteAsync(updateProductQuery, new
                                 {
-                                    OrderId = updatedOrderId,
-                                    ProductId = productId,
+                                    OrderId = model.Id,
+                                    ProductId = product.Id,
+                                    model.IdOrderStatus,
                                     product.Quantity
                                 }, transaction);
                             }
                             else
                             {
                                 const string insertProductQuery = @"
-                                INSERT INTO order_items (order_id, product_id, quantity)
-                                VALUES (@OrderId, @ProductId, @Quantity)";
+                                INSERT INTO order_items (id, order_id, product_id, quantity)
+                                VALUES (@Id, @OrderId, @ProductId, @Quantity)";
 
                                 await connection.ExecuteAsync(insertProductQuery, new
                                 {
-                                    OrderId = updatedOrderId,
-                                    ProductId = productId,
+                                    Id = Guid.NewGuid(),
+                                    OrderId = model.Id,
+                                    ProductId = product.Id,
                                     product.Quantity
                                 }, transaction);
                             }
@@ -300,46 +292,50 @@ namespace Pizzerie.Data.Repositories
 
             const string query = @"
             SELECT
-                o.uuid as Id,
+                MAX(o.id::text) as id,
                 e.name as EmployeeName,
-                o.customer_name as ClientName,
-                o.created_at as Creation,
-                o.updated_at as LastChangeDate,
-                p.uuid as ProductId,
-                p.description as Description,
-                p.category as Category,
-                p.price as Price,
-                oi.quantity as Quantity
+                MAX(o.customer_name) as ClientName,
+                MAX(o.created_at) as Creation,
+                MAX(o.updated_at) as LastChangeDate,
+                MAX(p.id::text) as ProductId,
+                MAX(p.description) as Description,
+                MAX(p.category) as Category,
+                MAX(p.price) as Price,
+                MAX(oi.quantity) as Quantity,
+                MAX(os.description) as OrderStatus
             FROM orders o
             JOIN employees e ON o.employee_id = e.id
             LEFT JOIN order_items oi ON o.id = oi.order_id
-            LEFT JOIN products p ON oi.product_id = p.id;";
+            JOIN order_status os ON oi.id_order_status = os.id
+            LEFT JOIN products p ON oi.product_id = p.id
+            GROUP BY 
+                o.id, 
+                e.name;";
 
-            var orderDictionary = new Dictionary<string, EmployeeCheckPadGetResponse>();
+            var response = await connection.QueryAsync(query);
 
-            await connection.QueryAsync<EmployeeCheckPadGetResponse, ProductResponse, EmployeeCheckPadGetResponse>(
-                query,
-                (orderResponse, product) =>
-                {
-                    if (!orderDictionary.TryGetValue(orderResponse.Id.ToString(), out var orderEntry))
+            var resultDictionary = response.ToDictionary(x => x.id, x => x);
+            var result = resultDictionary.Values.Select(x => new EmployeeCheckPadGetResponse
+            {
+                Id = x.id,
+                EmployeeName = x.employeename,
+                ClientName = x.clientname,
+                OrderStatus = x.orderstatus,
+                Creation = x.creation,
+                LastChangeDate = x.lastchangedate,
+                Products = response
+                    .Where(p => p.id == x.id)
+                    .Select(p => new ProductResponse
                     {
-                        orderEntry = orderResponse;
-                        orderEntry.ClientName = orderResponse.ClientName;
-                        orderEntry.Products = new List<ProductResponse>();
-                        orderDictionary.Add(orderEntry.Id.ToString(), orderEntry);
-                    }
+                        ProductId = p.productid,
+                        Description = p.description,
+                        Category = p.category,
+                        Price = p.price
+                    })
+                    .ToList()
+            }).ToList();
 
-                    if (!string.IsNullOrEmpty(product.ProductId.ToString()))
-                    {
-                        orderEntry.Products?.Add(product);
-                    }
-
-                    return orderEntry;
-                },
-                splitOn: "ProductId"
-            );
-
-            return orderDictionary.Values;
+            return result;
         }
 
         public async Task<IEnumerable<EmployeeCheckPadGetResponse>> GetEmployeeAsync(Guid idEmployee)
@@ -348,48 +344,51 @@ namespace Pizzerie.Data.Repositories
 
             const string query = @"
             SELECT
-                o.uuid as Id,
+                MAX(o.id::text) as id,
                 e.name as EmployeeName,
-                o.customer_name as ClientName,
-                o.created_at as Creation,
-                o.updated_at as LastChangeDate,
-                p.uuid as ProductId,
-                p.description as Description,
-                p.category as Category,
-                p.price as Price,
-                oi.quantity as Quantity
+                MAX(o.customer_name) as ClientName,
+                MAX(o.created_at) as Creation,
+                MAX(o.updated_at) as LastChangeDate,
+                MAX(p.id::text) as ProductId,
+                MAX(p.description) as Description,
+                MAX(p.category) as Category,
+                MAX(p.price) as Price,
+                MAX(oi.quantity) as Quantity,
+                MAX(os.description) as OrderStatus
             FROM orders o
             JOIN employees e ON o.employee_id = e.id
             LEFT JOIN order_items oi ON o.id = oi.order_id
+            JOIN order_status os ON oi.id_order_status = os.id
             LEFT JOIN products p ON oi.product_id = p.id
-        WHERE e.uuid = @EmployeeUuid;";
+            WHERE e.id = @EmployeeId
+            GROUP BY 
+                o.id, 
+                e.name;";
 
-            var orderDictionary = new Dictionary<string, EmployeeCheckPadGetResponse>();
+            var response = await connection.QueryAsync(query, param: new { EmployeeId = idEmployee });
 
-            await connection.QueryAsync<EmployeeCheckPadGetResponse, ProductResponse, EmployeeCheckPadGetResponse>(
-                query,
-                (orderResponse, product) =>
-                {
-                    if (!orderDictionary.TryGetValue(orderResponse.Id.ToString(), out var orderEntry))
+            var resultDictionary = response.ToDictionary(x => x.id, x => x);
+            var result = resultDictionary.Values.Select(x => new EmployeeCheckPadGetResponse
+            {
+                Id = x.id,
+                EmployeeName = x.employeename,
+                ClientName = x.clientname,
+                OrderStatus = x.orderstatus,
+                Creation = x.creation,
+                LastChangeDate = x.lastchangedate,
+                Products = response
+                    .Where(p => p.id == x.id)
+                    .Select(p => new ProductResponse
                     {
-                        orderEntry = orderResponse;
-                        orderEntry.ClientName = orderResponse.ClientName;
-                        orderEntry.Products = new List<ProductResponse>();
-                        orderDictionary.Add(orderEntry.Id.ToString(), orderEntry);
-                    }
+                        ProductId = p.productid,
+                        Description = p.description,
+                        Category = p.category,
+                        Price = p.price
+                    })
+                    .ToList()
+            }).ToList();
 
-                    if (!string.IsNullOrEmpty(product.ProductId.ToString()))
-                    {
-                        orderEntry.Products?.Add(product);
-                    }
-
-                    return orderEntry;
-                },
-                new { EmployeeUuid = idEmployee },
-                splitOn: "ProductId"
-            );
-
-            return orderDictionary.Values;
+            return result;
         }
     }
 }
