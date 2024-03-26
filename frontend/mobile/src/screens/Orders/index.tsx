@@ -1,24 +1,37 @@
 import React from "react";
 import { FlatList } from "react-native";
 
-import OrderCard from "components/OrderCard";
+import OrderCard from "components/Cards/OrderCard";
 
 import { Order } from "definitions/order";
 import { ScreenBaseProps } from "utils/index";
 
 import * as S from "./styles";
+import { useCart } from "providers/cart";
 
 const Orders: React.FC<ScreenBaseProps<"Orders">> = ({ navigation }) => {
+  const { setOrder } = useCart()
+
   const employees: Order[] = [
     {
-      Id: "1",
+      Id: 1,
+      Uuid: 'ashdkjasdhajksh',
       CustomerName: "John",
       CreatedAt: new Date(),
-      EmployeeId: "Sam",
+      EmployeeId: 1,
       UpdatedAt: new Date(),
-      Products: [],
+      Status: 'Aberto',
+      PaymentMethod: '',
+      TableNumber: 13,
+      TotalValue: 1888.9,
+      Note: 'Sem cebola'
     },
   ];
+
+  const onClick = (order: Order) => {
+    setOrder(order)
+    navigation.navigate("Order")
+  }
 
   return (
     <S.Container>
@@ -27,7 +40,7 @@ const Orders: React.FC<ScreenBaseProps<"Orders">> = ({ navigation }) => {
         renderItem={({ item }) => (
           <OrderCard
             order={item}
-            onPress={() => navigation.navigate("Order", { id: item.Id })}
+            onPress={onClick}
           />
         )}
         style={{ paddingHorizontal: 24, paddingVertical: 16 }}

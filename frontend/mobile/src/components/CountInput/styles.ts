@@ -45,6 +45,7 @@ export const TextInput = styled.TextInput.attrs({
 }) <ContentProps>`
   width: 100%;
   height: ${({ observation }) => (observation ? 67 : 46)}px;
+  text-align: center;
 
   border-radius: ${({ borderRadius }) => borderRadius ?? 4}px;
   padding-left: 6px;
@@ -59,15 +60,9 @@ export const TextInput = styled.TextInput.attrs({
   color: ${({ theme }) => theme.colors.text.primary};
 `;
 
-interface FooterProps {
-  color?: string;
-}
-
-export const Footer = styled.Text<FooterProps>`
-  width: 100%;
-
-  font-family: ${({ theme }) => theme.fonts.regular};
-  color: ${({ color, theme }) => color ?? theme.colors.text.secondary};
+export const IconWrapper = styled.View<{ position?: 'right' | 'left' }>`
+  flex: 1;
+  position: absolute;
+  ${({ position }) => `${position}: 12px`}
+  top: 8px;
 `;
-
-

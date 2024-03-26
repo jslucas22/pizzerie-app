@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import { View } from "react-native";
+import { Alert, View } from "react-native";
 
 import Input from "components/Input";
 import Spacer from "components/Spacer";
 import Button from "components/Button";
 import SelectInput from "components/SelectInput";
 
+import { showToast } from "utils/toast";
 import { ScreenBaseProps } from "utils/index";
 
-import EmployeeHeader from "./header";
+import EmployeeHeader from "headers/EmployeeHeader";
 import * as S from "./styles";
 
 const EmployeeForm: React.FC<ScreenBaseProps<"EmployeeForm">> = ({
@@ -16,6 +17,35 @@ const EmployeeForm: React.FC<ScreenBaseProps<"EmployeeForm">> = ({
   route,
 }) => {
   const [userType, setUserType] = useState("");
+  const [loading, setLoading] = useState(false)
+
+  const onPress = () => {
+    const title = route.params?.id ? 'ATUALIZAR' : 'SALVAR'
+    const subtitle = route.params?.id ? `Deseja atualizar o cadastro do funcionário #${route.params.id}?` : 'Deseja cadastrar o novo funcionário?'
+    Alert.alert(title, subtitle, [
+      { text: "Sim", onPress: handleConfirm },
+      { text: "Não" },
+    ]);
+  }
+
+  const handleConfirm = async () => {
+    setLoading(true)
+    try {
+      if (route.params?.id) {
+        //update
+        showToast("success", "Funcionário atualizado com sucesso!")
+      } else {
+        //save
+        showToast("success", "Funcionário criado com sucesso!")
+      }
+      navigation.navigate('Employees')
+    } catch (error) {
+      const msg = (error as Error).message
+      showToast("error", msg)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <>
@@ -45,7 +75,7 @@ const EmployeeForm: React.FC<ScreenBaseProps<"EmployeeForm">> = ({
         <View
           style={{ flex: 1, alignItems: "center", justifyContent: "flex-end" }}
         >
-          <Button value="Salvar" />
+          <Button value="Salvar" onPress={onPress} />
           <Spacer height={12} />
           <Button value="Cancelar" outline />
         </View>

@@ -1,43 +1,55 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable jsx-a11y/alt-text */
 import React from "react";
+import { Alert, View } from "react-native";
 
-import HomeHeader from "./header";
+import Icon from "components/Icon";
+import OptionsCard from "components/Cards/OptionsCard";
+
+import HomeHeader from "headers/HomeHeader";
+
+import { useMe } from "providers/user";
 
 import { useTheme } from "styled-components/native";
 import { ScreenBaseProps } from "utils/index";
 import * as S from "./styles";
-import { Alert } from "react-native";
-import OptionsCard from "components/OptionsCard";
-import { Employee } from "definitions/employee";
 
 const Home: React.FC<ScreenBaseProps<"Home">> = ({ navigation }) => {
   const theme = useTheme();
 
-  const user: Employee = {
-    Id: "hsdjashdaskhdakjshd",
-    Username: "manobrown",
-    Name: "Mano Brown",
-    Password: "1234",
-    LevelId: 2,
+  const { user, setUser, setToken } = useMe()
+
+  const onLogout = () => {
+    Alert.alert("SAIR", "Deseja sair da sua conta?", [
+      { text: "Sim", onPress: handleLogout },
+      { text: "Não" },
+    ]);
   };
 
   const handleLogout = () => {
-    Alert.alert("SAIR", "Deseja sair da sua conta?", [
-      { text: "Sim", onPress: () => navigation.replace("Login") },
-      { text: "Não" },
-    ]);
+    setToken(undefined)
+    setUser(undefined)
+    navigation.navigate("Login");
   };
 
   return (
     <>
       <HomeHeader
         onExit={() => {
-          handleLogout();
+          onLogout();
         }}
       />
+      <View style={{ width: '100%', height: '100%', position: 'absolute', alignItems: 'center', justifyContent: 'center' }}>
+        <Icon
+          name="pizza-slice"
+          type="fontAwesome5"
+          size={400}
+          right={false}
+          color={theme.colors.separator}
+        />
+      </View>
       <S.Container>
-        {user.LevelId === 2 ? (
+        {user?.LevelId === 2 ? (
           <>
             <OptionsCard
               name="Ver Funcionários"
@@ -60,7 +72,7 @@ const Home: React.FC<ScreenBaseProps<"Home">> = ({ navigation }) => {
               onPress={() => navigation.navigate("Settings")}
             />
           </>
-        ) : (
+        ) : user?.LevelId === 1 ? (
           <>
             <OptionsCard
               name="Ver Cardápio"
@@ -68,9 +80,14 @@ const Home: React.FC<ScreenBaseProps<"Home">> = ({ navigation }) => {
               onPress={() => navigation.navigate("Menu")}
             />
             <OptionsCard
-              name="Ver Comandas"
+              name="Ver Pedidos"
               icon={{ name: "cards", type: "material-community", size: 24 }}
-              onPress={() => navigation.navigate("Desks")}
+              onPress={() => navigation.navigate("Orders")}
+            />
+            <OptionsCard
+              name="Ver Lista de Itens prontos"
+              icon={{ name: "silverware-fork-knife", type: "material-community", size: 24 }}
+              onPress={() => navigation.navigate("ItemList")}
             />
             <OptionsCard
               name="Novo Pedido"
@@ -78,7 +95,13 @@ const Home: React.FC<ScreenBaseProps<"Home">> = ({ navigation }) => {
               onPress={() => navigation.navigate("Desks", { newDesk: true })}
             />
           </>
-        )}
+        ) : <>
+          <OptionsCard
+            name="Ver Lista de Itens a fazer"
+            icon={{ name: "silverware-fork-knife", type: "material-community", size: 24 }}
+            onPress={() => navigation.navigate("ItemList")}
+          />
+        </>}
       </S.Container>
     </>
   );

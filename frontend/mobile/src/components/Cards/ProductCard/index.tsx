@@ -20,8 +20,8 @@ const ProductCard: React.FC<Props> = ({ product, onPress }) => {
     product.Category == "Pizza"
       ? { name: "pizza-slice", type: "fontAwesome5", size: 0 }
       : product.Category == "Drink"
-      ? { name: "drink", type: "entypo", size: 0 }
-      : { name: "question", type: "fontAwesome", size: 0 };
+        ? { name: "drink", type: "entypo", size: 0 }
+        : { name: "question", type: "fontAwesome", size: 0 };
 
   return (
     <Shadows>

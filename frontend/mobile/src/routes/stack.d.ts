@@ -4,14 +4,15 @@ export type RootStackParamList = {
   Desks: undefined | { newDesk?: boolean };
   EmployeeForm: { id?: number } | undefined;
   Employees: undefined;
-  FinishOrders: undefined;
+  FinishOrder: undefined;
   Home: undefined;
+  ItemList: undefined;
   Login: undefined;
   Menu: undefined;
-  Order: { id: ?number } | undefined;
+  Order: undefined;
   Orders: undefined;
-  ProductForm: { id?: number } | undefined;
-  Products: undefined;
+  ProductForm: { id?: number, notToList?: boolean } | undefined;
+  Products: { notToList?: boolean } | undefined;
   Settings: undefined;
 };
 

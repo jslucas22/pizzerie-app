@@ -98,3 +98,14 @@ export function isNumberValid(value: string) {
     return value;
   }
 }
+
+export const formatPrice = (price: number, style: string = 'currency') => {
+  if (!price && price != 0) {
+    return '';
+  }
+  let fmt = new Intl.NumberFormat('pt-br', {
+    style: style,
+    currency: 'BRL',
+  });
+  return fmt.format(price);
+};

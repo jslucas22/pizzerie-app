@@ -11,15 +11,16 @@ import * as S from "./styles";
 
 type Props = {
   order: Order;
-  onPress?: () => void;
+  onPress: (item: Order) => void;
+  disabled?: boolean
 };
 
-const OrderCard: React.FC<Props> = ({ order, onPress }) => {
+const OrderCard: React.FC<Props> = ({ order, onPress, disabled }) => {
   const theme = useTheme();
 
   return (
     <Shadows>
-      <S.Container onPress={onPress}>
+      <S.Container onPress={() => onPress(order)} enabled={!disabled}>
         <View
           style={{
             width: 90,
@@ -42,11 +43,24 @@ const OrderCard: React.FC<Props> = ({ order, onPress }) => {
           <S.Title numberOfLines={1} ellipsizeMode="tail">
             Pedido #{order.Id}
           </S.Title>
+          <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <S.Subtitle bold>
+              Responsável: <S.Subtitle>{order.EmployeeId}</S.Subtitle>
+            </S.Subtitle>
+            <S.Subtitle bold>
+              Cliente: <S.Subtitle>{order.CustomerName}</S.Subtitle>
+            </S.Subtitle>
+          </View>
+          <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <S.Subtitle bold>
+              Nº mesa: <S.Subtitle>{order.TableNumber}</S.Subtitle>
+            </S.Subtitle>
+            <S.Subtitle bold>
+              Valor: <S.Subtitle>{order.TotalValue}</S.Subtitle>
+            </S.Subtitle>
+          </View>
           <S.Subtitle bold>
-            Responsável: <S.Subtitle>{order.EmployeeId}</S.Subtitle>
-          </S.Subtitle>
-          <S.Subtitle bold>
-            Cliente: <S.Subtitle>{order.CustomerName}</S.Subtitle>
+            Status: <S.Subtitle>{order.Status}</S.Subtitle>
           </S.Subtitle>
           <S.Subtitle bold>
             Data Início:{" "}

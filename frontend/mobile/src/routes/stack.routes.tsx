@@ -7,6 +7,8 @@ import Home from "screens/Home";
 import Menu from "screens/Menu";
 import Desks from "screens/Desks";
 import Login from "screens/Login";
+import Order from "screens/Order";
+import Orders from "screens/Orders";
 import Products from "screens/Products";
 import Settings from "screens/Settings";
 import Employees from "screens/Employees";
@@ -16,7 +18,8 @@ import EmployeeForm from "screens/EmployeeForm";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "styled-components/native";
 import { RootStackParamList } from "./stack";
-import Orders from "screens/Orders";
+import FinishOrder from "screens/FinishOrder";
+import ItemList from "screens/ItemList";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -83,6 +86,11 @@ export const StackRoutes: React.FC = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
+        name="ItemList"
+        component={ItemList}
+        options={{ headerTitle: 'Lista de Itens' }}
+      />
+      <Stack.Screen
         name="Products"
         component={Products}
         options={{ headerShown: false }}
@@ -91,6 +99,16 @@ export const StackRoutes: React.FC = () => {
         name="Orders"
         component={Orders}
         options={{ headerTitle: "Pedidos" }}
+      />
+      <Stack.Screen
+        name="Order"
+        component={Order}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="FinishOrder"
+        component={FinishOrder}
+        options={{ headerTitle: 'Finalizar pedido' }}
       />
     </Stack.Navigator>
   );

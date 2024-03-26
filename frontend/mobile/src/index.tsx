@@ -23,6 +23,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import LoadingPanel from "./components/LoadingPanel";
 import ErrorPage from "./components/ErrorPage";
+import { CartProvider } from "providers/cart";
+import { UserProvider } from "providers/user";
 
 export default function App() {
   const [fontsLoaded, err] = useFonts({
@@ -52,11 +54,15 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <StatusBar style="dark" backgroundColor="transparent" />
       <SafeAreaProvider>
-        <NavigationContainer>
-          <ThemeProvider theme={theme}>
-            <StackRoutes />
-          </ThemeProvider>
-        </NavigationContainer>
+        <UserProvider>
+          <CartProvider>
+            <NavigationContainer>
+              <ThemeProvider theme={theme}>
+                <StackRoutes />
+              </ThemeProvider>
+            </NavigationContainer>
+          </CartProvider>
+        </UserProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

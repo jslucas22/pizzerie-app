@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
 
+import {  LogBox } from "react-native";
+
+import DeskCard from "components/Cards/DeskCard";
+
 import * as S from "./styles";
-import { FlatList, LogBox, View } from "react-native";
-import DeskCard from "components/DeskCard";
-import Spacer from "components/Spacer";
 
 const Desks: React.FC = () => {
   LogBox.ignoreAllLogs();

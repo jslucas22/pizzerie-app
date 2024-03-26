@@ -4,31 +4,52 @@ import { TextInput, View } from "react-native";
 
 import Toast from "react-native-root-toast";
 
+import Icon from "components/Icon";
 import Input from "components/Input";
 import Button from "components/Button";
 import Spacer from "components/Spacer";
+import Version from "components/Version";
 import InputPassword from "components/InputPassword";
 
 import { focusNextInput, ScreenBaseProps } from "utils/index";
 import { useTheme } from "styled-components/native";
-import Version from "components/Version";
 import * as S from "./styles";
-import Icon from "components/Icon";
+import { Employee } from "definitions/employee";
+import { useMe } from "providers/user";
+import { showToast } from "utils/toast";
 
 type Props = ScreenBaseProps<"Login">;
 
 const Login: React.FC<Props> = ({ navigation }) => {
+  const { setUser, setToken } = useMe()
   const theme = useTheme();
+
   const passRef = useRef<TextInput>(null);
-  const [user, setUser] = useState("");
+  const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
-    Toast.show("Login realizado com sucesso!", {
-      backgroundColor: theme.colors.secondary,
-    });
-    navigation.navigate("Home");
+  const handleLogin = async () => {
+    setLoading(true);
+    try {
+      const user: Employee = {
+        Id: 1,
+        Uuid: 'hasdahsadhsashd',
+        Username: "manobrown",
+        Name: "Mano Brown",
+        Password: "1234",
+        LevelId: 2,
+      };
+      setUser(user);
+      setToken("dasdakshkdhakjdhjahsdhahsd")
+      showToast('success', "Login realizado com sucesso!");
+      navigation.navigate("Home");
+    } catch (error) {
+      const msg = (error as Error).message
+      showToast("error", msg)
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -51,8 +72,8 @@ const Login: React.FC<Props> = ({ navigation }) => {
         <Spacer height={24} />
         <Input
           placeholder="Usuário"
-          value={user}
-          onChangeText={setUser}
+          value={login}
+          onChangeText={setLogin}
           autoCapitalize="none"
           autoFocus
           onSubmitEditing={() => focusNextInput(passRef)}
@@ -68,7 +89,7 @@ const Login: React.FC<Props> = ({ navigation }) => {
             return;
           }}
         />
-        <Spacer height={30} />
+        <Spacer height={140} />
         <Button
           value="Login"
           onPress={() => {

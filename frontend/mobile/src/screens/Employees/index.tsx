@@ -6,7 +6,7 @@ import EmployeeCard from "components/Cards/EmployeeCard";
 import { Employee } from "definitions/employee";
 import { ScreenBaseProps } from "utils/index";
 
-import EmployeesHeader from "./header";
+import EmployeesHeader from "headers/EmployeesHeader";
 import * as S from "./styles";
 
 const Employees: React.FC<ScreenBaseProps<"Employees">> = ({ navigation }) => {

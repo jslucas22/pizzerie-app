@@ -1,17 +1,19 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback } from "react";
-import { BackHandler, Image, View } from "react-native";
+import { BackHandler, View } from "react-native";
 
 import { useFocusEffect } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import Icon from "../../components/Icon";
-import Spacer from "../../components/Spacer";
-import HeaderContainer from "../../components/headers/headerContainer";
+import Icon from "../components/Icon";
+import Spacer from "../components/Spacer";
+import HeaderContainer from "../components/headers/headerContainer";
+
+import { useMe } from "providers/user";
 
 import { useTheme } from "styled-components/native";
-import * as S from "./styles";
+import * as S from "screens/Home/styles";
 
 interface Props {
   onExit: () => void;
@@ -20,6 +22,8 @@ interface Props {
 const HomeHeader: React.FC<Props> = ({ onExit }) => {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
+
+  const { user } = useMe()
 
   //Intercept back button behavior
   useFocusEffect(
@@ -67,7 +71,7 @@ const HomeHeader: React.FC<Props> = ({ onExit }) => {
           }}
         >
           <S.User>
-            Usuário: <S.User semibold>{"Administrador"}</S.User>
+            Usuário: <S.User semibold>{user?.Name}</S.User>
           </S.User>
           <Spacer width={8} />
           <Icon

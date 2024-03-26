@@ -18,6 +18,7 @@ export type AppTheme = {
     status: {
       active: string;
       error: string;
+      warning: string;
     };
     disabled: string;
     header: {
@@ -58,8 +59,9 @@ export const theme: AppTheme = {
       primary: " #FFA500",
     },
     status: {
-      active: "#22FF55",
+      active: "#22CC55",
       error: "#FF3322",
+      warning: "#FF8811",
     },
     text: {
       primary: "#002510",

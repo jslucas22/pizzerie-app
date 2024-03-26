@@ -1,29 +1,33 @@
 import React from "react";
 import { FlatList } from "react-native";
 
-import ProductCard from "components/ProductCard";
+import ProductCard from "components/Cards/ProductCard";
 
 import { Product } from "definitions/product";
 import { ScreenBaseProps } from "utils/index";
 
-import ProductsHeader from "./header";
+import ProductsHeader from "headers/ProductsHeader";
 import * as S from "./styles";
 
-const Products: React.FC<ScreenBaseProps<"Products">> = ({ navigation }) => {
+const Products: React.FC<ScreenBaseProps<"Products">> = ({ navigation, route }) => {
   const products: Product[] = [
     {
-      Id: "1",
+      Id: 1,
+      Uuid: 'ashddashdshaksdhajksh',
       Description: "Pizza Frango c/ Catupiry",
       Category: "Pizza",
       Price: 39.99,
     },
   ];
 
+  const notToList = route.params?.notToList ?? false
+
   return (
     <>
       <ProductsHeader
         onGoBack={navigation.goBack}
         onAdd={() => navigation.navigate("ProductForm")}
+        notToList={notToList}
       />
       <S.Container>
         <FlatList
@@ -32,7 +36,7 @@ const Products: React.FC<ScreenBaseProps<"Products">> = ({ navigation }) => {
             <ProductCard
               product={item}
               onPress={() =>
-                navigation.navigate("ProductForm", { id: item.Id })
+                navigation.navigate("ProductForm", { id: item.Id, notToList })
               }
             />
           )}
